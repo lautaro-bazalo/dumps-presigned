@@ -44,7 +44,7 @@ func (d dumps) getDumps(ctx *gin.Context) {
 		return
 	}
 
-	reqPresign, err := d.presigner.GetObject(d.bucketName, req.Path, req.Timeout)
+	reqPresign, err := d.presigner.GetObject(d.bucketName, req.Key, req.Timeout)
 	if err != nil {
 		ctx.JSON(500, gin.H{
 			"error": err.Error(),
