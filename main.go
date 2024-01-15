@@ -5,18 +5,22 @@ import (
 	"dumps-presigned/internal/application"
 	"dumps-presigned/internal/presigner"
 	"github.com/gin-gonic/gin"
+	"os"
 )
 
 type dumps struct {
-	presigner *presigner.Presigner
+	presigner  *presigner.Presigner
+	bucketName string
 }
 
 func main() {
 
 	app := application.NewApplication()
+	bucketName := os.Getenv("bucket-name")
 
 	dumps := dumps{
-		presigner: app.Presigner,
+		presigner:  app.Presigner,
+		bucketName: bucketName,
 	}
 
 	r := gin.Default()
@@ -40,7 +44,7 @@ func (d dumps) getDumps(ctx *gin.Context) {
 		return
 	}
 
-	reqPresign, err := d.presigner.GetObject("nebula-coco-prod", req.Path, req.Timeout)
+	reqPresign, err := d.presigner.GetObject(d.bucketName, req.Path, req.Timeout)
 	if err != nil {
 		ctx.JSON(500, gin.H{
 			"error": err.Error(),
